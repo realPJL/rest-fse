@@ -1,3 +1,14 @@
-Es existiert eine README, die das Projekt beschreibt und die notwendigen Abhängigkeiten auflistet.
-- Beschreibung ❌
-- notwendige Abhängigkeiten ❌
+- README existiert ✅
+- Code in Java ✅
+- Build File ✅
+- Build Tool ✅
+- Zugriff auf die API erfolgt über REST Calls ❌
+    - GET muss umgesetzt werden ❌
+    - PUT und POST gewünscht ❌
+- Daten müssen persistiert werden
+    - DB-Anbindung oder einzelne Datei ❌
+- Fehlerhafte Anfragen werden abgefangen ❌
+    - Kein Fehler im Backend ❌
+    - entsprechenden Fehlercode zurückliefern ❌
+- Beschreibung des Projekts in README-File ❌
+- notwendige Abhängigkeiten aufgelistet in README-File ❌
