@@ -2,13 +2,13 @@
 - Code in Java ✅
 - Build File ✅
 - Build Tool ✅
-- Zugriff auf die API erfolgt über REST Calls ❌
-    - GET muss umgesetzt werden ❌
-    - PUT und POST gewünscht ❌
+- Zugriff auf die API erfolgt über REST Calls ✅
+    - GET muss umgesetzt werden ✅
+    - PUT und POST gewünscht ✅
 - Daten müssen persistiert werden
-    - DB-Anbindung oder einzelne Datei ❌
+    - DB-Anbindung oder einzelne Datei ✅
 - Fehlerhafte Anfragen werden abgefangen ❌
     - Kein Fehler im Backend ❌
     - entsprechenden Fehlercode zurückliefern ❌
 - Beschreibung des Projekts in README-File ❌
-- notwendige Abhängigkeiten aufgelistet in README-File ❌
+    - notwendige Abhängigkeiten aufgelistet in README-File ❌
