@@ -1,21 +1,34 @@
 package com.example.rest_fse;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Artikel {
-    private int id; // ID wird automatisch zugewiesen
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private String name;
     private int bestand;
     private double preis;
 
-    // Konstruktor für Artikel (ohne ID, da die Datenbank sie vergibt)
+    // Standardkonstruktor (für JPA erforderlich)
+    public Artikel() {}
+    
+    // Konstruktor ohne ID (für manuelles Erstellen)
     public Artikel(String name, int bestand, double preis) {
-        if (preis < 0) {
-            throw new IllegalArgumentException("Der Preis darf nicht kleiner oder gleich 0 sein.");
-        }
-        if (name == null) {
-            throw new IllegalArgumentException("Der Artikel muss einen Namen haben.");
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Der Name darf nicht leer sein.");
         }
         if (bestand < 0) {
-            throw new IllegalArgumentException("Der Bestand kann nicht kleiner als 0 sein.");
+            throw new IllegalArgumentException("Der Bestand darf nicht negativ sein.");
+        }
+        if (preis < 0) {
+            throw new IllegalArgumentException("Der Preis darf nicht negativ sein.");
         }
 
         this.name = name;
@@ -23,14 +36,13 @@ public class Artikel {
         this.preis = preis;
     }
 
-    // Konstruktor für Artikel mit ID (z. B. beim Abrufen aus der Datenbank)
-    public Artikel(int id, String name, int bestand, double preis) {
-        this(name, bestand, preis);
-        this.id = id;
+    // Getter und Setter
+    public Long getId() {
+        return this.id;
     }
 
-    public int getID() {
-        return this.id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
