@@ -56,5 +56,12 @@ public class ArtikelController {
             return ResponseEntity.ok(aktualisiert);
         }).orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
     }
+
+    //DELETE: Artikel löschen
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteArtikel(@PathVariable Long id) {
+        artikelRepository.deleteById(id);
+        return ResponseEntity.noContent().build(); // Statuscode 204 signalisiert, dass die Anfrage erfolgreich war, aber die Antwort keinen Inhalt hat
+    }
 }
 
