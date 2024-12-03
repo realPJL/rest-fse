@@ -21,16 +21,7 @@ public class Artikel {
     
     // Konstruktor ohne ID (für manuelles Erstellen)
     public Artikel(String name, int bestand, double preis) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Der Name darf nicht leer sein.");
-        }
-        if (bestand < 0) {
-            throw new IllegalArgumentException("Der Bestand darf nicht negativ sein.");
-        }
-        if (preis < 0) {
-            throw new IllegalArgumentException("Der Preis darf nicht negativ sein.");
-        }
-
+       
         this.name = name;
         this.bestand = bestand;
         this.preis = preis;
