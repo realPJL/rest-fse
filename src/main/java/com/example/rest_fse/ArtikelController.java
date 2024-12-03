@@ -20,13 +20,13 @@ public class ArtikelController {
     @Autowired
     private ArtikelRepository artikelRepository;
 
-    // GET: Alle Artikel abrufen
+    // GET: Alle Artikel abrufen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel")
     @GetMapping
     public List<Artikel> getAlleArtikel() {
         return artikelRepository.findAll(); // Holt alle Artikel aus der Datenbank
     }
 
-    // GET: Einen Artikel nach ID abrufen
+    // GET: Einen Artikel nach ID abrufen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id""))
     @GetMapping("/{id}")
     public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
         return artikelRepository.findById(id)
@@ -34,7 +34,8 @@ public class ArtikelController {
                 .orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
     }
 
-    // POST: Neuen Artikel hinzufügen
+
+    // POST: Neuen Artikel hinzufügen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel" -Method Post -ContentType "application/json" -Body '{"name": "", "bestand": , "preis": }')
     @PostMapping
     public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung
@@ -45,7 +46,7 @@ public class ArtikelController {
         return ResponseEntity.status(201).body(gespeicherterArtikel);
     }
 
-    // PUT: Artikel aktualisieren
+    // PUT: Artikel aktualisieren (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id"" -Method Put -ContentType "application/json" -Body '{"name": "", "bestand": , "preis": }')
     @PutMapping("/{id}")
     public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
         return artikelRepository.findById(id).map(artikel -> {
@@ -58,7 +59,7 @@ public class ArtikelController {
         }).orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
     }
 
-    //DELETE: Artikel löschen
+    //DELETE: Artikel löschen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id"" -Method Delete)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArtikel(@PathVariable Long id) {
         artikelRepository.deleteById(id);
