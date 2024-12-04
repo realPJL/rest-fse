@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.dao.EmptyResultDataAccessException;
+
 
 @RestController
 @RequestMapping("/api/artikel")
@@ -39,7 +41,7 @@ public class ArtikelController {
     public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung
         if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0) {
-            return ResponseEntity.badRequest().build(); // Ungültige Eingabe
+            return ResponseEntity.badRequest().body(null); // Ungültige Eingabe
         }
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
         return ResponseEntity.status(201).body(gespeicherterArtikel);
@@ -49,6 +51,9 @@ public class ArtikelController {
     @PutMapping("/{id}")
     public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
         return artikelRepository.findById(id).map(artikel -> {
+            if (artikelDetails.getBestand() < 0 || artikelDetails.getPreis() < 0) {
+                throw new IllegalArgumentException("Bestand und Preis dürfen nicht negativ sein!"); // Fehler auslösen
+            }
             // Aktualisieren der Felder
             artikel.setName(artikelDetails.getName());
             artikel.setBestand(artikelDetails.getBestand());
@@ -58,11 +63,14 @@ public class ArtikelController {
         }).orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
     }
 
-    //DELETE: Artikel löschen
+    // DELETE: Artikel löschen
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArtikel(@PathVariable Long id) {
+        if (!artikelRepository.existsById(id)) {
+            throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
+        }
         artikelRepository.deleteById(id);
-        return ResponseEntity.noContent().build(); // Statuscode 204 signalisiert, dass die Anfrage erfolgreich war, aber die Antwort keinen Inhalt hat
+        return ResponseEntity.noContent().build(); // Statuscode 204 für erfolgreiche Löschung
     }
 }
 
