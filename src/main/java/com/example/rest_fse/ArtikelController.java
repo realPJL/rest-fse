@@ -68,12 +68,12 @@ public class ArtikelController {
 
     // DELETE: Artikel löschen
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArtikel(@PathVariable Long id) {
+    public ResponseEntity<String> deleteArtikel(@PathVariable Long id) {
         if (!artikelRepository.existsById(id)) {
-            throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
+            throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1); // Fehler auslösen
         }
         artikelRepository.deleteById(id);
-        return ResponseEntity.noContent().build(); // Statuscode 204 für erfolgreiche Löschung
+        return ResponseEntity.ok("Artikel mit ID " + id + " wurde erfolgreich gelöscht.");
     }
 }
 
