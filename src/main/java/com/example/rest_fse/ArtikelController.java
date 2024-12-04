@@ -41,7 +41,7 @@ public class ArtikelController {
     public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung
         if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0) {
-            return ResponseEntity.badRequest().body(null); // Ungültige Eingabe
+            throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
         }
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
         return ResponseEntity.status(201).body(gespeicherterArtikel);
@@ -52,7 +52,7 @@ public class ArtikelController {
     public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
         return artikelRepository.findById(id).map(artikel -> {
             if (artikelDetails.getBestand() < 0 || artikelDetails.getPreis() < 0) {
-                throw new IllegalArgumentException("Bestand und Preis dürfen nicht negativ sein!"); // Fehler auslösen
+                throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
             }
             // Aktualisieren der Felder
             artikel.setName(artikelDetails.getName());
