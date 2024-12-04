@@ -22,6 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneralException(Exception ex) {
+        ex.printStackTrace(); // Zusätzliche Informationen zu Fehler loggen
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ein unerwarteter Fehler ist aufgetreten");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
