@@ -31,6 +31,9 @@ public class ArtikelController {
     // GET: Einen Artikel nach ID abrufen
     @GetMapping("/{id}")
     public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
+        if (!artikelRepository.existsById(id)) {
+            throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
+        }
         return artikelRepository.findById(id)
                 .map(ResponseEntity::ok) // Artikel gefunden
                 .orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
