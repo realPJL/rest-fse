@@ -25,7 +25,7 @@ public class ArtikelController {
     // GET: Alle Artikel abrufen
     @GetMapping
     public List<Artikel> getAlleArtikel() {
-        return artikelRepository.findAll(); // Holt alle Artikel aus der Datenbank
+        return artikelRepository.findAll();
     }
 
     // GET: Einen Artikel nach ID abrufen
@@ -33,6 +33,9 @@ public class ArtikelController {
     public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
         if (!artikelRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
+        }
+        if (id == null) {
+            throw new IllegalArgumentException("ID darf nicht NULL sein!");
         }
         return artikelRepository.findById(id)
                 .map(ResponseEntity::ok) // Artikel gefunden
@@ -43,8 +46,11 @@ public class ArtikelController {
     @PostMapping
     public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0) {
+        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0){
             throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
+        }
+        if (neuerArtikel.getName() == "") {
+            throw new IllegalArgumentException("Name darf nicht leer sein!");
         }
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
         return ResponseEntity.status(201).body(gespeicherterArtikel);
@@ -53,9 +59,15 @@ public class ArtikelController {
     // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
     public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+        if (!artikelRepository.existsById(id)) {
+            throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
+        }
         return artikelRepository.findById(id).map(artikel -> {
             if (artikelDetails.getBestand() < 0 || artikelDetails.getPreis() < 0) {
-                throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
+                throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!");
+            }
+            if (id == null) {
+                throw new IllegalArgumentException("ID darf nicht NULL sein!");
             }
             // Aktualisieren der Felder
             artikel.setName(artikelDetails.getName());
@@ -70,7 +82,7 @@ public class ArtikelController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteArtikel(@PathVariable Long id) {
         if (!artikelRepository.existsById(id)) {
-            throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1); // Fehler auslösen
+            throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
         }
         artikelRepository.deleteById(id);
         return ResponseEntity.ok("Artikel mit ID " + id + " wurde erfolgreich gelöscht.");
