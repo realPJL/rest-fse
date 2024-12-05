@@ -88,4 +88,3 @@ public class ArtikelController {
         return ResponseEntity.ok("Artikel mit ID " + id + " wurde erfolgreich gelöscht.");
     }
 }
-
