@@ -20,15 +20,14 @@ public class ArtikelController {
     @Autowired
     private ArtikelRepository artikelRepository;
 
-    
-    // GET: Alle Artikel abrufen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel")
+    // GET: Alle Artikel abrufen
     @GetMapping
     public ResponseEntity<Object> getAlleArtikel() {
         List<Artikel> artikelListe = artikelRepository.findAll();
 
         if (artikelListe.isEmpty()) {
             // Rückgabe einer Fehlermeldung, wenn keine Artikel vorhanden sind
-            return ResponseEntity.status(404).body("(404) Keine Artikel vorhanden bzw. im Inventar.");
+            return ResponseEntity.status(404).body("Status:(404) Keine Artikel vorhanden bzw. im Inventar.");
         }
 
         // Rückgabe der Artikelliste
@@ -37,63 +36,81 @@ public class ArtikelController {
 
 
 
-
-    // GET: Einen Artikel nach ID abrufen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id""))
+    // GET: einzelnen Artikel mit ID abrufen
     @GetMapping("/{id}")
-    public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
+    public ResponseEntity<Object> getArtikelById(@PathVariable Long id) {
+        if (id <= 0) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Anfrage: Die Artikel-ID muss größer als 0 sein.");
+        }
+
         return artikelRepository.findById(id)
-                .map(artikel -> ResponseEntity.ok(artikel)) // Artikel gefunden
-                .orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
+                .map(artikel -> ResponseEntity.ok((Object) artikel)) // Artikel gefunden
+                .orElse(ResponseEntity.status(404).body("Status:(404) Artikel mit ID " + id + " wurde nicht gefunden.")); // Artikel nicht gefunden
     }
 
 
 
-
-    // POST: Neuen Artikel hinzufügen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel" -Method Post -ContentType "application/json" -Body '{"name": "", "bestand": , "preis": }')
+    // POST: Neuen Artikel hinzufügen
     @PostMapping
     public ResponseEntity<Object> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > 1000000 || neuerArtikel.getPreis() < 0 || neuerArtikel.getPreis() > 1000000 || neuerArtikel.getName() == null || neuerArtikel.getName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("(400) Ungültige Eingabe: Bestand, Preis oder Name haben einen nicht gültigen Wert."); // Ungültige Eingabe
+        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > 1000000) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Bestand hat einen nicht gültigen Wert als Eingabe."); // Bestand Ungültige Eingabe
         }
+        if (neuerArtikel.getPreis() < 0 || neuerArtikel.getPreis() > 1000000) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Preis hat einen nicht gültigen Wert als Eingabe."); // Preis Ungültige Eingabe
+        }
+        if (neuerArtikel.getName() == null || neuerArtikel.getName().trim().isEmpty()) {
+           return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Name hat einen nicht gültigen Wert als Eingabe."); // Ungültige Eingabe
+        } 
+        
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
         return ResponseEntity.status(201).body(gespeicherterArtikel);
     }
 
 
 
-
-    // PUT: Artikel aktualisieren (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id"" -Method Put -ContentType "application/json" -Body '{"name": "", "bestand": , "preis": }')
+    // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
-    public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
-        
-        // Validierung
-        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > 1000000 || artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000 || artikelDetails.getName() == null || artikelDetails.getName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().build(); // Ungültige Eingabe
+    public ResponseEntity<Object> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+        // Validierung der ID
+        if (id <= 0) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Anfrage: Die Artikel-ID muss größer als 0 sein.");
         }
-            // ID finden
-        return artikelRepository.findById(id).map(artikel -> {
-           // Aktualisieren der Felder
-            artikel.setName(artikelDetails.getName());
-            artikel.setBestand(artikelDetails.getBestand());
-            artikel.setPreis(artikelDetails.getPreis());
-            Artikel aktualisiert = artikelRepository.save(artikel);
-            return ResponseEntity.ok(aktualisiert);
-        }).orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
+
+        // Validierung der Eingabedaten
+        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > 1000000) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Bestand hat einen nicht gültigen Wert als Eingabe."); // Bestand ungültig
+        }
+        if (artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Preis hat einen nicht gültigen Wert als Eingabe."); // Preis ungültig
+        }
+        if (artikelDetails.getName() == null || artikelDetails.getName().isEmpty()) {
+            return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Name hat einen nicht gültigen Wert als Eingabe."); // Name ungültig
+        }
+
+        // Artikel suchen und aktualisieren
+        return artikelRepository.findById(id)
+                .map(artikel -> {
+                    artikel.setName(artikelDetails.getName());
+                    artikel.setBestand(artikelDetails.getBestand());
+                    artikel.setPreis(artikelDetails.getPreis());
+                    Artikel aktualisiert = artikelRepository.save(artikel);
+                    return ResponseEntity.ok((Object) aktualisiert);
+                })
+                .orElse(ResponseEntity.status(404).body("Status:(404) Artikel mit ID " + id + " wurde nicht gefunden.")); // Artikel nicht gefunden
     }
 
 
-
-
-    //DELETE: Artikel löschen (Invoke-RestMethod -Uri "http://localhost:8080/api/artikel/"id"" -Method Delete)
+    
+    //DELETE: Artikel löschen
     @DeleteMapping("/{id}")
         public ResponseEntity<String> deleteArtikel(@PathVariable Long id) {
         if (!artikelRepository.existsById(id)) {
-            return ResponseEntity.status(404).body("(404) Artikel mit ID " + id + " wurde nicht gefunden.");
+            return ResponseEntity.status(404).body("Status:(404) Artikel mit ID " + id + " wurde nicht gefunden.");
         }
 
         artikelRepository.deleteById(id);
         return ResponseEntity.ok("Artikel mit ID " + id + " wurde erfolgreich gelöscht.");
     }
 }
-
