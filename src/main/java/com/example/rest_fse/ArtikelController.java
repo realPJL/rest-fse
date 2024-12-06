@@ -34,9 +34,9 @@ public class ArtikelController {
         if (!artikelRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
         }
-        /*if (id <= 0) {
+        if (id <= 0) {
             throw new IllegalArgumentException("ID darf nicht NULL sein!");
-        }*/
+        }
         return artikelRepository.findById(id)
                 .map(ResponseEntity::ok) // Artikel gefunden
                 .orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
