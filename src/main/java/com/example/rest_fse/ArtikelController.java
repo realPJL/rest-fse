@@ -108,6 +108,10 @@ public class ArtikelController {
         if (artikelDetails.getName().trim().isEmpty() || artikelDetails.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein.");
         }
+        // Name darf nur aus Buchstaben bestehen
+        if (!artikelDetails.getName().matches("^[a-zA-Z\\s]$")) {
+            throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
+        }
 
         // Artikel suchen, artikelDetails aktualisieren, speichern und ausgeben
         return artikelRepository.findById(id).map(artikel -> {
