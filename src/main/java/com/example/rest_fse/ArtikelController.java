@@ -41,9 +41,9 @@ public class ArtikelController {
     @GetMapping("/{id}")
     public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
         // Validierung der ID
-        if (id <= 0) {
+        /*if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
-        }
+        } */
         return artikelRepository.findById(id)
                 
                 // Artikel gefunden
@@ -74,7 +74,7 @@ public class ArtikelController {
             throw new IllegalArgumentException("Name darf nicht leer sein."); 
         }
         // Name darf nur aus Buchstaben bestehen
-        if (!neuerArtikel.getName().matches("^[a-zA-ZäöüÄÖÜß\\s]$")) {
+        if (!neuerArtikel.getName().matches("^[a-zA-Z\\s]$")) {
             throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
         }
     
