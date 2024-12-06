@@ -34,9 +34,9 @@ public class ArtikelController {
         if (!artikelRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel nicht gefunden", 1); // Fehler auslösen
         }
-        if (id == null) {
+        /*if (id <= 0) {
             throw new IllegalArgumentException("ID darf nicht NULL sein!");
-        }
+        }*/
         return artikelRepository.findById(id)
                 .map(ResponseEntity::ok) // Artikel gefunden
                 .orElse(ResponseEntity.notFound().build()); // Artikel nicht gefunden
@@ -49,7 +49,7 @@ public class ArtikelController {
         if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0){
             throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
         }
-        if (neuerArtikel.getName() == "") {
+        if (neuerArtikel.getName() == " " || neuerArtikel.getName().isEmpty() || neuerArtikel.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein!");
         }
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
