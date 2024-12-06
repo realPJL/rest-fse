@@ -49,7 +49,7 @@ public class ArtikelController {
         if (neuerArtikel.getBestand() < 0 || neuerArtikel.getPreis() < 0){
             throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!"); // Fehler auslösen
         }
-        if (neuerArtikel.getName() == " " || neuerArtikel.getName().isEmpty() || neuerArtikel.getName() == null) {
+        if (neuerArtikel.getName() == " " || neuerArtikel.getName().trim().isEmpty() || neuerArtikel.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein!");
         }
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
@@ -59,15 +59,15 @@ public class ArtikelController {
     // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
     public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID darf nicht NULL sein!");
+        }
         if (!artikelRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
         }
         return artikelRepository.findById(id).map(artikel -> {
             if (artikelDetails.getBestand() < 0 || artikelDetails.getPreis() < 0) {
                 throw new IllegalArgumentException("Bestand und/oder Preis dürfen nicht negativ sein!");
-            }
-            if (id == null) {
-                throw new IllegalArgumentException("ID darf nicht NULL sein!");
             }
             // Aktualisieren der Felder
             artikel.setName(artikelDetails.getName());
