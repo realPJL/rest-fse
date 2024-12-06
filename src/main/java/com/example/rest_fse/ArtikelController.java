@@ -85,7 +85,7 @@ public class ArtikelController {
         if (artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000) {
             return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Preis hat einen nicht gültigen Wert als Eingabe."); // Preis ungültig
         }
-        if (artikelDetails.getName() == null || artikelDetails.getName().isEmpty()) {
+        if (artikelDetails.getName() == null || artikelDetails.getName().trim().isEmpty()) {
             return ResponseEntity.status(400).body("Status:(400) Ungültige Eingabe: Name hat einen nicht gültigen Wert als Eingabe."); // Name ungültig
         }
 
