@@ -62,7 +62,7 @@ public class ArtikelController {
         // Validierung der Eingabedaten:
 
         // Bestand hat einen ungültigen Wert
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > 10000000){
+        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > 2147483647){
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
         // Preis hat einen ungültigen Wert
@@ -73,6 +73,11 @@ public class ArtikelController {
         if (neuerArtikel.getName().trim().isEmpty() || neuerArtikel.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein."); 
         }
+        // Name darf nur aus Buchstaben bestehen
+        if (!neuerArtikel.getName().matches("^[a-zA-ZäöüÄÖÜß\\s]$")) {
+            throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
+        }
+    
 
         // Artikel speichern und ausgeben
         Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
@@ -92,7 +97,7 @@ public class ArtikelController {
         // Validierung der Eingabedaten:
 
         // Bestand hat einen ungültigen Wert
-        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > 10000000){
+        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > 2147483647){
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
         // Preis hat einen ungültigen Wert
@@ -113,8 +118,10 @@ public class ArtikelController {
             return ResponseEntity.ok(aktualisiert);
 
         // Exception: Artikel nicht gefunden
-        }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID"  + id +  "nicht gefunden.", 1));
+        }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID "  + id +  " nicht gefunden.", 1));
     }
+
+
 
     // DELETE: Artikel löschen
     @DeleteMapping("/{id}")
@@ -127,7 +134,7 @@ public class ArtikelController {
         if (!artikelRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
         }
-        // Artikel löschen
+        // Artikel wird gelöscht
         artikelRepository.deleteById(id);
         // Bestätigung der Löschung
         return ResponseEntity.ok("Artikel mit ID " + id + " wurde erfolgreich gelöscht.");
