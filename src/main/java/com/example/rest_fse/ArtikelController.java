@@ -58,16 +58,18 @@ public class ArtikelController {
     // GET: Artikel basierend auf Lagerort abrufen
     @GetMapping("/lagerort")
     public ResponseEntity<List<Artikel>> getArtikelByLagerort(@RequestParam String lagerort) {
+        // Validierung des Lagerorts
         if (lagerort == null || lagerort.trim().isEmpty()) {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
         if (!lagerort.matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Der Name des Lagerorts darf nur aus Buchstaben bestehen.");
         }
-        
         if (!artikelRepository.existsByLagerort(lagerort)) {
             throw new EmptyResultDataAccessException("Lagerort " + lagerort + " nicht gefunden.", 1);
         }
+
+        // Artikel basierend auf Lagerort abrufen & Exception werfen, wenn keine Artikel einem Lagerort zugeordnet sind
         List<Artikel> artikelListe = artikelRepository.findByLagerort(lagerort);
         if (artikelListe.isEmpty()) {
             throw new EmptyResultDataAccessException("Keine Artikel im Lagerort " + lagerort + " gefunden.", 1);
