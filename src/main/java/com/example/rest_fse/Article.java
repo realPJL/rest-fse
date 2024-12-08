@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Artikel {
+public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +18,10 @@ public class Artikel {
     private String lagerort;
 
     // Standardkonstruktor (für JPA erforderlich)
-    public Artikel() {}
+    public Article() {}
     
     // Konstruktor ohne ID (für manuelles Erstellen)
-    public Artikel(String name, int bestand, double preis, String lagerort) {
+    public Article(String name, int bestand, double preis, String lagerort) {
         this.name = name;
         this.bestand = bestand;
         this.preis = preis;

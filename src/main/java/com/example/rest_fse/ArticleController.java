@@ -18,15 +18,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 @RestController
 @RequestMapping("/api/artikel")
-public class ArtikelController {
+public class ArticleController {
 
     @Autowired
-    private ArtikelRepository artikelRepository;
+    private ArticleRepository articleRepository;
 
     // GET: Alle Artikel abrufen
     @GetMapping
-    public ResponseEntity<Object> getAllArtikel() {
-        List<Artikel> artikelListe = artikelRepository.findAll();
+    public ResponseEntity<Object> getAllArticle() {
+        List<Article> artikelListe = articleRepository.findAll();
         if (artikelListe.isEmpty()) {
             // Rückgabe einer Fehlermeldung, wenn keine Artikel gefunden wurden
             throw new EmptyResultDataAccessException("Keine Artikel gvorhanden bzw. im Inventar", 1);
@@ -37,112 +37,112 @@ public class ArtikelController {
 
     // GET: Einen Artikel nach ID abrufen
     @GetMapping("/{id}")
-    public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
+    public ResponseEntity<Article> getArticleById(@PathVariable Long id) {
         // Validierung der ID
         if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
         }
-        return artikelRepository.findById(id)
+        return articleRepository.findById(id)
                 .map(ResponseEntity::ok) // Artikel gefunden
                 .orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel nicht gefunden
     }
 
     // GET: Artikel basierend auf Lagerort abrufen
     @GetMapping("/lagerort")
-    public ResponseEntity<List<Artikel>> getArtikelByLagerort(@RequestParam String lagerort) {
+    public ResponseEntity<List<Article>> getArtikelByLagerort(@RequestParam String lagerort) {
         if (lagerort == null || lagerort.trim().isEmpty()) {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
         if (!lagerort.matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
         }
-        if (!artikelRepository.existsByLagerort(lagerort)) {
+        if (!articleRepository.existsByLagerort(lagerort)) {
             throw new EmptyResultDataAccessException("Lagerort " + lagerort + " nicht gefunden.", 1);
         }
 
-        List<Artikel> artikelListe = artikelRepository.findByLagerort(lagerort);
-        if (artikelListe.isEmpty()) {
+        List<Article> articleList = articleRepository.findByLagerort(lagerort);
+        if (articleList.isEmpty()) {
             throw new EmptyResultDataAccessException("Keine Artikel im Lagerort " + lagerort + " vorhanden.", 1);
         }
-        return ResponseEntity.ok(artikelListe);
+        return ResponseEntity.ok(articleList);
     }
 
     // POST: Neuen Artikel hinzufügen
     @PostMapping
-    public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
+    public ResponseEntity<Article> createArticle(@RequestBody Article newArticle) {
         // Validierung der Eingabedaten
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > Integer.MAX_VALUE) {
+        if (newArticle.getBestand() < 0 || newArticle.getBestand() > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
-        if (neuerArtikel.getPreis() < 0 || neuerArtikel.getPreis() > 1000000) {
+        if (newArticle.getPreis() < 0 || newArticle.getPreis() > 1000000) {
             throw new IllegalArgumentException("Preis hat einen ungültigen Wert als Eingabe.");
         }
-        if (neuerArtikel.getName().trim().isEmpty() || neuerArtikel.getName() == null) {
+        if (newArticle.getName().trim().isEmpty() || newArticle.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein.");
         }
-        if (!neuerArtikel.getName().matches("^[a-zA-Z\s]+$")) {
+        if (!newArticle.getName().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Name darf nur Buchstaben und Leerzeichen enthalten.");
         }
-        if (neuerArtikel.getLagerort().trim().isEmpty() || neuerArtikel.getLagerort() == null) {
+        if (newArticle.getLagerort().trim().isEmpty() || newArticle.getLagerort() == null) {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
-        if (!neuerArtikel.getLagerort().matches("^[a-zA-Z\s]+$")) {
+        if (!newArticle.getLagerort().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
         }
 
         // Artikel speichern und ausgeben
-        Artikel gespeicherArtikel = artikelRepository.save(neuerArtikel);
-        return ResponseEntity.status(201).body(gespeicherArtikel);
+        Article savedArticle = articleRepository.save(newArticle);
+        return ResponseEntity.status(201).body(savedArticle);
     }
 
     // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
-    public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+    public ResponseEntity<Article> aktualisiereArtikel(@PathVariable Long id, @RequestBody Article articleDetails) {
         if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
         }
         
         // Eingabedaten validieren
-        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > Integer.MAX_VALUE) {
+        if (articleDetails.getBestand() < 0 || articleDetails.getBestand() > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
-        if (artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000) {
+        if (articleDetails.getPreis() < 0 || articleDetails.getPreis() > 1000000) {
             throw new IllegalArgumentException("Preis hat einen ungültigen Wert als Eingabe.");
         }
-        if (artikelDetails.getName().trim().isEmpty() || artikelDetails.getName() == null) {
+        if (articleDetails.getName().trim().isEmpty() || articleDetails.getName() == null) {
             throw new IllegalArgumentException("Name darf nicht leer sein.");
         }
-        if (!artikelDetails.getName().matches("^[a-zA-Z\s]+$")) {
+        if (!articleDetails.getName().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Name darf nur Buchstaben.");
         }
-        if (artikelDetails.getLagerort().trim().isEmpty() || artikelDetails.getLagerort() == null) {
+        if (articleDetails.getLagerort().trim().isEmpty() || articleDetails.getLagerort() == null) {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
-        if (!artikelDetails.getLagerort().matches("^[a-zA-Z\s]+$")) {
+        if (!articleDetails.getLagerort().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
         }
 
-        return artikelRepository.findById(id).map(artikel -> {
-            artikel.setName(artikelDetails.getName());
-            artikel.setBestand(artikelDetails.getBestand());
-            artikel.setPreis(artikelDetails.getPreis());
-            Artikel aktualisiert = artikelRepository.save(artikel);
+        return articleRepository.findById(id).map(article -> {
+            article.setName(articleDetails.getName());
+            article.setBestand(articleDetails.getBestand());
+            article.setPreis(articleDetails.getPreis());
+            Article aktualisiert = articleRepository.save(article);
             return ResponseEntity.ok(aktualisiert);
         }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel gefunden
     }
 
     // DELETE: Artikel löschen
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteArtikel(@PathVariable Long id) {
+    public ResponseEntity<String> deleteArticle(@PathVariable Long id) {
         // Validierung der ID
         if (id <= 0) {
             throw new IllegalArgumentException("Artikel-ID muss größer als 0 sein.");
         }
-        if (!artikelRepository.existsById(id)) {
+        if (!articleRepository.existsById(id)) {
             throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
         }
 
-        artikelRepository.deleteById(id);
+        articleRepository.deleteById(id);
         return ResponseEntity.ok("Artikel mit der ID " + id + " gelöscht.");
     }
 }
