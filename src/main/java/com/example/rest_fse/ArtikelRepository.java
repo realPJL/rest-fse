@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArtikelRepository extends JpaRepository<Artikel, Long> {
     List<Artikel> findByLagerort(String lagerort);
+    boolean existsByLagerort(String lagerort);
 }

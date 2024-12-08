@@ -64,7 +64,10 @@ public class ArtikelController {
         if (!lagerort.matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
         }
-
+        
+        if (!artikelRepository.existsByLagerort(lagerort)) {
+            throw new EmptyResultDataAccessException("Lagerort " + lagerort + " nicht gefunden.", 1);
+        }
         List<Artikel> artikelListe = artikelRepository.findByLagerort(lagerort);
         if (artikelListe.isEmpty()) {
             throw new EmptyResultDataAccessException("Keine Artikel im Lagerort " + lagerort + " gefunden.", 1);
