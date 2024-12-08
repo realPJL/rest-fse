@@ -11,7 +11,7 @@ public class RestFseApplication {
 		int selectedPort = PortUtil.findAvailablePort(startPort);
 		System.setProperty("server.port", String.valueOf(selectedPort)); // Dynamische Porteinstellung
 		SpringApplication.run(RestFseApplication.class, args);
-		System.out.println("Server läuft auf Port: " + selectedPort);
+		System.out.println("Server laeuft auf Port: " + selectedPort);
 	}
 
 }

@@ -16,14 +16,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<ApiError> handleNotFound(EmptyResultDataAccessException ex) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(), "Artikel nicht gefunden");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneralException(Exception ex) {
         ex.printStackTrace(); // Zusätzliche Informationen zu Fehler loggen
-        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ein unerwarteter Fehler ist aufgetreten");
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server kann nicht auf die Anfrage reagieren.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 }
