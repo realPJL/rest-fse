@@ -41,9 +41,9 @@ public class ArtikelController {
     @GetMapping("/{id}")
     public ResponseEntity<Artikel> getArtikelById(@PathVariable Long id) {
         // Validierung der ID
-        /*if (id <= 0) {
+        if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
-        } */
+        }
         return artikelRepository.findById(id)
                 
                 // Artikel gefunden
