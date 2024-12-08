@@ -74,7 +74,7 @@ public class ArtikelController {
             throw new IllegalArgumentException("Name darf nicht leer sein."); 
         }
         // Name darf nur aus Buchstaben bestehen
-        if (!neuerArtikel.getName().matches("^[a-zA-Z\\s]$")) {
+        if (!neuerArtikel.getName().matches("^[a-zA-Z\\s]+$")) {
             throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
         }
     
