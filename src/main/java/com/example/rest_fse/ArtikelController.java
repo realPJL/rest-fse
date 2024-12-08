@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -46,11 +47,31 @@ public class ArtikelController {
                 .orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel nicht gefunden
     }
 
+    // GET: Artikel basierend auf Lagerort abrufen
+    @GetMapping("/lagerort")
+    public ResponseEntity<List<Artikel>> getArtikelByLagerort(@RequestParam String lagerort) {
+        if (lagerort == null || lagerort.trim().isEmpty()) {
+            throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
+        }
+        if (!lagerort.matches("^[a-zA-Z\s]+$")) {
+            throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
+        }
+        if (!artikelRepository.existsByLagerort(lagerort)) {
+            throw new EmptyResultDataAccessException("Lagerort " + lagerort + " nicht gefunden.", 1);
+        }
+
+        List<Artikel> artikelListe = artikelRepository.findByLagerort(lagerort);
+        if (artikelListe.isEmpty()) {
+            throw new EmptyResultDataAccessException("Keine Artikel im Lagerort " + lagerort + " vorhanden.", 1);
+        }
+        return ResponseEntity.ok(artikelListe);
+    }
+
     // POST: Neuen Artikel hinzufügen
     @PostMapping
     public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung der Eingabedaten
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > 2147483647) {
+        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
         if (neuerArtikel.getPreis() < 0 || neuerArtikel.getPreis() > 1000000) {
@@ -61,6 +82,12 @@ public class ArtikelController {
         }
         if (!neuerArtikel.getName().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Name darf nur Buchstaben und Leerzeichen enthalten.");
+        }
+        if (neuerArtikel.getLagerort().trim().isEmpty() || neuerArtikel.getLagerort() == null) {
+            throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
+        }
+        if (!neuerArtikel.getLagerort().matches("^[a-zA-Z\s]+$")) {
+            throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
         }
 
         // Artikel speichern und ausgeben
@@ -76,7 +103,7 @@ public class ArtikelController {
         }
         
         // Eingabedaten validieren
-        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > 2147483647) {
+        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
         if (artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000) {
@@ -88,7 +115,13 @@ public class ArtikelController {
         if (!artikelDetails.getName().matches("^[a-zA-Z\s]+$")) {
             throw new IllegalArgumentException("Name darf nur Buchstaben.");
         }
-        
+        if (artikelDetails.getLagerort().trim().isEmpty() || artikelDetails.getLagerort() == null) {
+            throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
+        }
+        if (!artikelDetails.getLagerort().matches("^[a-zA-Z\s]+$")) {
+            throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
+        }
+
         return artikelRepository.findById(id).map(artikel -> {
             artikel.setName(artikelDetails.getName());
             artikel.setBestand(artikelDetails.getBestand());
