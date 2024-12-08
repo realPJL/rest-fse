@@ -15,15 +15,17 @@ public class Artikel {
     private String name;
     private int bestand;
     private double preis;
+    private String lagerort;
 
     // Standardkonstruktor (für JPA erforderlich)
     public Artikel() {}
     
     // Konstruktor ohne ID (für manuelles Erstellen)
-    public Artikel(String name, int bestand, double preis) {
+    public Artikel(String name, int bestand, double preis, String lagerort) {
         this.name = name;
         this.bestand = bestand;
         this.preis = preis;
+        this.lagerort = lagerort;
     }
 
     // Getter und Setter
@@ -57,5 +59,13 @@ public class Artikel {
 
     public void setPreis(double preis) {
         this.preis = preis;
+    }
+
+    public String getLagerort() {
+        return this.lagerort;
+    }
+
+    public void setLagerort(String lagerort) {
+        this.lagerort = lagerort;
     }
 }
