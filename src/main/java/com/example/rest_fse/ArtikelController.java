@@ -62,7 +62,7 @@ public class ArtikelController {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
         if (!lagerort.matches("^[a-zA-Z\s]+$")) {
-            throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
+            throw new IllegalArgumentException("Der Name des Lagerorts darf nur aus Buchstaben bestehen.");
         }
         
         if (!artikelRepository.existsByLagerort(lagerort)) {
