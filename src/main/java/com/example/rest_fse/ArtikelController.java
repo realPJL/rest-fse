@@ -140,7 +140,7 @@ public class ArtikelController {
     // Validierung der Eingabedaten:
 
         // Bestand hat einen ungültigen Wert
-        if (artikel.getBestand() < 0 || artikel.getBestand() > Integer.MAX_VALUE){
+        if (artikel.getBestand() < 0 || artikel.getBestand() > 5000000){
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
         }
         // Preis hat einen ungültigen Wert
