@@ -71,24 +71,7 @@ public class ArtikelController {
     @PostMapping
     public ResponseEntity<Artikel> addArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung der Eingabedaten
-        if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
-        }
-        if (neuerArtikel.getPreis() < 0 || neuerArtikel.getPreis() > 1000000) {
-            throw new IllegalArgumentException("Preis hat einen ungültigen Wert als Eingabe.");
-        }
-        if (neuerArtikel.getName().trim().isEmpty() || neuerArtikel.getName() == null) {
-            throw new IllegalArgumentException("Name darf nicht leer sein.");
-        }
-        if (!neuerArtikel.getName().matches("^[a-zA-Z\s]+$")) {
-            throw new IllegalArgumentException("Name darf nur Buchstaben und Leerzeichen enthalten.");
-        }
-        if (neuerArtikel.getLagerort().trim().isEmpty() || neuerArtikel.getLagerort() == null) {
-            throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
-        }
-        if (!neuerArtikel.getLagerort().matches("^[a-zA-Z\s]+$")) {
-            throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
-        }
+        validateArtikel(neuerArtikel);
 
         // Artikel speichern und ausgeben
         Artikel gespeicherArtikel = artikelRepository.save(neuerArtikel);
@@ -103,29 +86,12 @@ public class ArtikelController {
         }
         
         // Eingabedaten validieren
-        if (artikelDetails.getBestand() < 0 || artikelDetails.getBestand() > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
-        }
-        if (artikelDetails.getPreis() < 0 || artikelDetails.getPreis() > 1000000) {
-            throw new IllegalArgumentException("Preis hat einen ungültigen Wert als Eingabe.");
-        }
-        if (artikelDetails.getName().trim().isEmpty() || artikelDetails.getName() == null) {
-            throw new IllegalArgumentException("Name darf nicht leer sein.");
-        }
-        if (!artikelDetails.getName().matches("^[a-zA-Z\s]+$")) {
-            throw new IllegalArgumentException("Name darf nur Buchstaben.");
-        }
-        if (artikelDetails.getLagerort().trim().isEmpty() || artikelDetails.getLagerort() == null) {
-            throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
-        }
-        if (!artikelDetails.getLagerort().matches("^[a-zA-Z\s]+$")) {
-            throw new IllegalArgumentException("Lagerort darf nur Buchstaben enthalten.");
-        }
+        validateArtikel(artikelDetails);
 
         return artikelRepository.findById(id).map(artikel -> {
             artikel.setName(artikelDetails.getName());
             artikel.setBestand(artikelDetails.getBestand());
-            artikel.setPreis(artikelDetails.getPreis());
+            artikel.setEinzelpreis(artikelDetails.getEinzelpreis());
             Artikel aktualisiert = artikelRepository.save(artikel);
             return ResponseEntity.ok(aktualisiert);
         }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel gefunden
@@ -144,5 +110,34 @@ public class ArtikelController {
 
         artikelRepository.deleteById(id);
         return ResponseEntity.ok("Artikel mit der ID " + id + " gelöscht.");
+    }
+
+    private void validateArtikel(Artikel artikel) {
+        // Validierung der Eingabedaten:
+    
+        // Bestand hat einen ungültigen Wert
+        if (artikel.getBestand() < 0 || artikel.getBestand() > 5000000){
+            throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
+        }
+        // Preis hat einen ungültigen Wert
+        if (artikel.getEinzelpreis() < 0 || artikel.getEinzelpreis() > 1000000){
+            throw new IllegalArgumentException("Preis hat einen ungültigen Wert als Eingabe.");
+        }
+        // Name darf nicht leer sein
+        if (artikel.getName().trim().isEmpty() || artikel.getName() == null) {
+            throw new IllegalArgumentException("Name darf nicht leer sein.");
+        }
+        // Name darf nur aus Buchstaben bestehen
+        if (!artikel.getName().matches("^[a-zA-Z\\s]+$")) {
+            throw new IllegalArgumentException("Name darf nur aus Buchstaben bestehen.");
+        }
+        // Lagerort darf nicht leer sein
+        if (artikel.getLagerort().trim().isEmpty() || artikel.getLagerort() == null) {
+            throw new IllegalArgumentException("Lagerort darf nicht leer sein."); 
+        }
+        // Lagerort darf nur aus Buchstaben bestehen
+        if (!artikel.getLagerort().matches("^[a-zA-Z\s]+$")) {
+            throw new IllegalArgumentException("Lagerort darf nur aus Buchstaben bestehen.");
+        }
     }
 }

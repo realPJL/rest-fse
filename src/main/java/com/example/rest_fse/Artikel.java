@@ -14,17 +14,17 @@ public class Artikel {
     
     private String name;
     private int bestand;
-    private double preis;
+    private double einzelpreis;
     private String lagerort;
 
     // Standardkonstruktor (für JPA erforderlich)
     public Artikel() {}
     
     // Konstruktor ohne ID (für manuelles Erstellen)
-    public Artikel(String name, int bestand, double preis, String lagerort) {
+    public Artikel(String name, int bestand, double einzelpreis, String lagerort) {
         this.name = name;
         this.bestand = bestand;
-        this.preis = preis;
+        this.einzelpreis = einzelpreis;
         this.lagerort = lagerort;
     }
 
@@ -53,12 +53,12 @@ public class Artikel {
         this.bestand = bestand;
     }
 
-    public double getPreis() {
-        return this.preis;
+    public double getEinzelpreis() {
+        return this.einzelpreis;
     }
 
-    public void setPreis(double preis) {
-        this.preis = preis;
+    public void setEinzelpreis(double einzelpreis) {
+        this.einzelpreis = einzelpreis;
     }
 
     public String getLagerort() {
