@@ -69,7 +69,7 @@ public class ArtikelController {
 
     // POST: Neuen Artikel hinzufügen
     @PostMapping
-    public ResponseEntity<Artikel> erstelleArtikel(@RequestBody Artikel neuerArtikel) {
+    public ResponseEntity<Artikel> addArtikel(@RequestBody Artikel neuerArtikel) {
         // Validierung der Eingabedaten
         if (neuerArtikel.getBestand() < 0 || neuerArtikel.getBestand() > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
@@ -97,7 +97,7 @@ public class ArtikelController {
 
     // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
-    public ResponseEntity<Artikel> aktualisiereArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+    public ResponseEntity<Artikel> updateArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
         if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
         }
