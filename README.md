@@ -8,7 +8,7 @@ Dieses Projekt implementiert ein Backend einer RESTful-Webanwendung zur Verwaltu
 ### Hauptfunktionen:
 1. **Artikelverwaltung**: Hinzufügen, Abrufen, Aktualisieren und Löschen von Artikeln.
 2. **Filterung nach Lagerort**: Artikel können nach Lagerort abgefragt werden.
-3. **Dynamische Portzuweisung**: Der Server sucht automatisch einen verfügbaren Port, beginnend bei Port 8080.
+3. **Dynamische Portzuweisung**: Der Server sucht automatisch einen verfügbaren Port, beginnend bei Port 8080. Falls dieser belegt ist, wird autoinkrementiert.
 4. **Globale Fehlerbehandlung**: Einheitliche Behandlung von Ausnahmen wie ungültigen Anfragen oder nicht gefundenen Ressourcen.
 
 ---
@@ -30,15 +30,15 @@ Dieses Projekt implementiert ein Backend einer RESTful-Webanwendung zur Verwaltu
 ### Voraussetzungen:
 1. **Java 17** oder neuer.
 2. **Gradle** für den Build-Prozess.
-3. **Spring Boot**: Die Anwendung basiert auf Spring Boot.
+3. **Spring Boot** als Framework
 4. **MariaDB** für das persistieren der Daten.
 5. **git**
 
 ### Schritte:
 1. **Repository klonen**:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/realPJL/rest-fse.git
+   cd rest-fse
    ```
 2. **Abhängigkeiten bauen**:
    ```bash
