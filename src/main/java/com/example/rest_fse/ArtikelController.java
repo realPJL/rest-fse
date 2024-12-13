@@ -3,6 +3,7 @@ package com.example.rest_fse;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 
 @RestController
@@ -29,7 +29,7 @@ public class ArtikelController {
         List<Artikel> artikelListe = artikelRepository.findAll();
         if (artikelListe.isEmpty()) {
             // Rückgabe einer Fehlermeldung, wenn keine Artikel gefunden wurden
-            throw new EmptyResultDataAccessException("Keine Artikel gvorhanden bzw. im Inventar", 1);
+            throw new EmptyResultDataAccessException("Keine Artikel vorhanden bzw. im Inventar", 1);
         }
         // Rückgabe der Artikelliste
         return ResponseEntity.ok(artikelListe);
@@ -42,14 +42,16 @@ public class ArtikelController {
         if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
         }
+        // Artikel über ID suchen
         return artikelRepository.findById(id)
-                .map(ResponseEntity::ok) // Artikel gefunden
+                .map(artikel -> ResponseEntity.ok(artikel)) // Artikel gefunden
                 .orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel nicht gefunden
     }
 
     // GET: Artikel basierend auf Lagerort abrufen
     @GetMapping("/lagerort")
     public ResponseEntity<List<Artikel>> getArtikelByLagerort(@RequestParam String lagerort) {
+        // Validierung des Lagerorts
         if (lagerort == null || lagerort.trim().isEmpty()) {
             throw new IllegalArgumentException("Lagerort darf nicht leer sein.");
         }
@@ -60,6 +62,7 @@ public class ArtikelController {
             throw new EmptyResultDataAccessException("Lagerort " + lagerort + " nicht gefunden.", 1);
         }
 
+        // Artikel basierend auf Lagerort abrufen & Exception werfen, wenn keine Artikel einem Lagerort zugeordnet sind
         List<Artikel> artikelListe = artikelRepository.findByLagerort(lagerort);
         if (artikelListe.isEmpty()) {
             throw new EmptyResultDataAccessException("Keine Artikel im Lagerort " + lagerort + " vorhanden.", 1);
@@ -81,20 +84,22 @@ public class ArtikelController {
     // PUT: Artikel aktualisieren
     @PutMapping("/{id}")
     public ResponseEntity<Artikel> updateArtikel(@PathVariable Long id, @RequestBody Artikel artikelDetails) {
+        // Validierung der ID
         if (id <= 0) {
             throw new IllegalArgumentException("Die Artikel-ID muss größer als 0 sein.");
         }
         
-        // Eingabedaten validieren
+        // Validierung der Eingabedaten
         validateArtikel(artikelDetails);
 
+        // Artikel suchen, artikelDetails aktualisieren, speichern und ausgeben
         return artikelRepository.findById(id).map(artikel -> {
             artikel.setName(artikelDetails.getName());
             artikel.setBestand(artikelDetails.getBestand());
             artikel.setEinzelpreis(artikelDetails.getEinzelpreis());
             Artikel aktualisiert = artikelRepository.save(artikel);
             return ResponseEntity.ok(aktualisiert);
-        }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel gefunden
+        }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel nicht gefunden
     }
 
     // DELETE: Artikel löschen
@@ -108,13 +113,13 @@ public class ArtikelController {
             throw new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1);
         }
 
+        // Artikel wird gelöscht
         artikelRepository.deleteById(id);
-        return ResponseEntity.ok("Artikel mit der ID " + id + " gelöscht.");
+        return ResponseEntity.ok("Artikel mit der ID " + id + " gelöscht.");  // Bestätigung der Löschung
     }
 
+     // Validierung der Eingabedaten
     private void validateArtikel(Artikel artikel) {
-        // Validierung der Eingabedaten:
-    
         // Bestand hat einen ungültigen Wert
         if (artikel.getBestand() < 0 || artikel.getBestand() > 5000000){
             throw new IllegalArgumentException("Bestand hat einen ungültigen Wert als Eingabe.");
