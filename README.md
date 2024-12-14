@@ -35,20 +35,111 @@ Dieses Projekt implementiert ein Backend einer RESTful-Webanwendung zur Verwaltu
 5. **git**
 
 ### Schritte:
+#### Linux (Deb/Ubuntu)
+1. **Pakete aktualisieren:**
+   ```bash
+   sudo apt update
+   ```
+2. **MariaDB installieren:**
+   ```bash
+   sudo apt intall mariadb-server -y
+   ```
+3. **MariaDB starten und testen:**
+   ```bash
+   sudo systemctl start mariadb
+   sudo systemctl enable mariadb
+   ```
+4. **Installation sichern (optional):**
+   ```bash
+   sudo mysql_secure_installation
+   ```
+   - set a root password
+   - remove anonymous users
+   - disallow root login remotely
+   - remove test databases
+5. **Installation verifizieren:**
+   ```bash
+   mysql --version
+   ```
+
+#### MacOS
+1. **MariaDB mit Brew installieren:**
+   ```bash
+   brew install mariadb
+   ```
+2. **MariaDB starten:**
+   ```bash
+   brew services start mariadb
+   ```
+3. **Installation sichern (optional):**
+   ```bash
+   mysql_secure_installation
+   ```
+   - set a root password
+   - remove anonymous users
+   - disallow root login remotely
+   - remove test databases
+4. **Installation verifizieren:**
+   ```bash
+   mysql --version
+   ```
+#### Windows
+TODO
+
+
+
 1. **Repository klonen**:
    ```bash
    git clone https://github.com/realPJL/rest-fse.git
    cd rest-fse
    ```
-2. **Abhängigkeiten bauen**:
+2. **DB aufsetzen:**
+   ```bash
+   mysql -u root -p
+   ```
+
+   ```bash
+   CREATE DATABASE 'your_database_name';
+   ```
+
+   ```bash
+   CREATE USER 'your_user'@'%' IDENTIFIED BY 'your_password';
+   ```
+
+   ```bash
+   GRANT ALL PRIVILEGES ON 'your_database_name'.* TO 'your_user'@'%';
+   ```
+
+   ```bash
+   FLUSH PRIVILEGES;
+   ```
+```your_user``` 
+Dies ist der Benutzername, der erstellt und für die Verbindung zur Datenbank verwendet wird.
+
+```your_password``` 
+Dies ist das mit dem Benutzernamen verbundene Passwort.
+
+
+```your_database_name```
+Dies ist der Name der Datenbank, die Ihre Anwendung verwenden wird.
+Ersetzen Sie ihn durch einen beschreibenden Namen, z. B. den Namen des Projekts.
+
+```%```
+Dies ist ein Platzhalter für einen beliebigen Host. Wenn Benutzer den Zugriff auf einen bestimmten Host beschränken wollen (z. B. nur localhost oder einen bestimmten Server), sollten sie % ersetzen:
+- 'localhost' für Verbindungen nur vom selben Server.
+- '192.168.1.100' für Verbindungen von einer bestimmten IP-Adresse.
+#### **ACHTUNG!**
+Wenn Sie Benutzername, Passwort und DB-Name gesetzt haben, müssen sie diese in die ```application.properties``` eintragen.
+
+3. **Abhängigkeiten bauen**:
    ```bash
    ./gradlew clean build
    ```
-3. **Anwendung starten**:
+4. **Anwendung starten**:
    ```bash
    ./gradlew bootRun
    ```
-4. **API testen**:
+5. **API testen**:
    Die Anwendung läuft auf einem dynamisch gewählten Port. Der Port wird nach dem Start in der Konsole ausgegeben. Standardmäßig läuft die Anwendung auf Port 8080, falls dieser Belegt ist wird automatisch auf den nächst höheren Port gewechselt.
 
 ---
