@@ -77,8 +77,8 @@ public class ArtikelController {
         validateArtikel(neuerArtikel);
 
         // Artikel speichern und ausgeben
-        Artikel gespeicherArtikel = artikelRepository.save(neuerArtikel);
-        return ResponseEntity.status(201).body(gespeicherArtikel);
+        Artikel gespeicherterArtikel = artikelRepository.save(neuerArtikel);
+        return ResponseEntity.status(201).body(gespeicherterArtikel);
     }
 
     // PUT: Artikel aktualisieren
