@@ -97,7 +97,7 @@ TODO
    ```bash
    mysql -u root -p
    ```
-   
+
    ```bash
    CREATE DATABASE 'your_database_name';
    ```
@@ -128,7 +128,7 @@ Ersetzen Sie ihn durch einen beschreibenden Namen, z. B. den Namen des Projekts.
 Dies ist ein Platzhalter für einen beliebigen Host. Wenn Benutzer den Zugriff auf einen bestimmten Host beschränken wollen (z. B. nur localhost oder einen bestimmten Server), sollten sie % ersetzen:
 - 'localhost' für Verbindungen nur vom selben Server.
 - '192.168.1.100' für Verbindungen von einer bestimmten IP-Adresse.
-**ACHTUNG!**
+#### **ACHTUNG!**
 Wenn Sie Benutzername, Passwort und DB-Name gesetzt haben, müssen sie diese in die ```application.properties``` eintragen.
 
 3. **Abhängigkeiten bauen**:
