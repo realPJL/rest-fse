@@ -97,6 +97,7 @@ public class ArtikelController {
             artikel.setName(artikelDetails.getName());
             artikel.setBestand(artikelDetails.getBestand());
             artikel.setEinzelpreis(artikelDetails.getEinzelpreis());
+            artikel.setLagerort(artikelDetails.getLagerort());
             Artikel aktualisiert = artikelRepository.save(artikel);
             return ResponseEntity.ok(aktualisiert);
         }).orElseThrow(() -> new EmptyResultDataAccessException("Artikel mit der ID " + id + " nicht gefunden.", 1)); // Artikel nicht gefunden
