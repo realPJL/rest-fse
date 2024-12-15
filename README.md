@@ -83,10 +83,21 @@ Dieses Projekt implementiert ein Backend einer RESTful-Webanwendung zur Verwaltu
    ```bash
    mysql --version
    ```
+
 #### Windows
-TODO
+1. **Besuche die offizielle MariaDB-Webseite: https://mariadb.org/download/.**
+2. **Wähle dein Betriebssystem (Windows) und die gewünschte Version aus.**
+3. **Lade die Installationsdatei (MSI-Paket) herunter.**
+4. **Starte die Installation mit Hilfe der Installationsdatei.**
+5. **Folge den Anweisungen der Installation.**
+6. **Lege ein Passwort für den root-Benutzer fest und vergesse es nicht.**
+7. **Öffne HeidiSQL.**
+8. **Gebe der Session einen Namen.**
+9. **Gebe bei Hostname/IP 'localhost' und bei Port '3306' ein.**
+10. **Erstelle eine neue Datenbank.**
 
-
+#### **ACHTUNG!**
+Wenn Sie Benutzername, Passwort und DB-Name gesetzt haben, müssen sie diese in die ```application.properties``` eintragen.
 
 1. **Repository klonen**:
    ```bash
@@ -128,6 +139,7 @@ Ersetzen Sie ihn durch einen beschreibenden Namen, z. B. den Namen des Projekts.
 Dies ist ein Platzhalter für einen beliebigen Host. Wenn Benutzer den Zugriff auf einen bestimmten Host beschränken wollen (z. B. nur localhost oder einen bestimmten Server), sollten sie % ersetzen:
 - 'localhost' für Verbindungen nur vom selben Server.
 - '192.168.1.100' für Verbindungen von einer bestimmten IP-Adresse.
+
 #### **ACHTUNG!**
 Wenn Sie Benutzername, Passwort und DB-Name gesetzt haben, müssen sie diese in die ```application.properties``` eintragen.
 
